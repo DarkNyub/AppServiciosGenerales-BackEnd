@@ -132,6 +132,11 @@ try
 
     app.Run();
 }
+catch (HostAbortedException)
+{
+    // Ignorar de forma segura. EF Core lanza esto intencionalmente 
+    // cuando ejecuta comandos como 'dotnet ef migrations add'
+}
 catch (Exception ex)
 {
     // Si la app explota al arrancar (ej: variable de entorno mal escrita, fallo de conexión inicial)

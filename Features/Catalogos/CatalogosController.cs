@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Features.Catalogos;
 
-//[Authorize] // Nivel 1: Exige que el usuario tenga un Token válido para entrar a cualquier método
 [ApiController]
 [Route("api/[controller]")]
 public class CatalogosController : ControllerBase
@@ -17,39 +16,51 @@ public class CatalogosController : ControllerBase
         _repository = repository;
     }
 
-    // --- ENDPOINTS DE CATEGORIAS ---
-    
-    // Al no especificar Rol, hereda el [Authorize] general (Clientes y Operadores pueden leer)
     [HttpGet("categorias")]
-    public async Task<IActionResult> ObtenerCategorias() => Ok(await _repository.ObtenerCategoriasAsync());
+    public async Task<IActionResult> ObtenerCategorias() 
+    {
+        var categorias = await _repository.ObtenerCategoriasAsync();
+        // Mapeamos a DTO para entregar JSON limpio a Flutter
+        var dtos = categorias.Select(c => new CategoriaDto(c.Id, c.Nombre, c.ImagenUrl));
+        return Ok(dtos);
+    }
 
-    // Nivel 2: Restringe la creación estrictamente al rol Administrador
     [Authorize(Roles = "Administrador")]
     [HttpPost("categorias")]
     public async Task<IActionResult> CrearCategoria([FromBody] CrearCategoriaDto dto) => 
         Ok(await _service.CrearCategoriaAsync(dto));
 
-    // --- ENDPOINTS DE ACTIVIDADES ---
     [HttpGet("actividades")]
-    public async Task<IActionResult> ObtenerActividades() => Ok(await _repository.ObtenerActividadesAsync());
+    public async Task<IActionResult> ObtenerActividades() 
+    {
+        var actividades = await _repository.ObtenerActividadesAsync();
+        var dtos = actividades.Select(a => new ActividadDto(a.Id, a.Nombre, a.CategoriaId, a.PrecioBase, a.RequiereEquipo, a.ImagenUrl));
+        return Ok(dtos);
+    }
 
     [Authorize(Roles = "Administrador")]
     [HttpPost("actividades")]
     public async Task<IActionResult> CrearActividad([FromBody] CrearActividadDto dto) => 
         Ok(await _service.CrearActividadAsync(dto));
 
-    // --- ENDPOINTS DE MEDIOS DE TRANSPORTE ---
     [HttpGet("medios-transporte")]
-    public async Task<IActionResult> ObtenerMediosTransporte() => Ok(await _repository.ObtenerMediosTransporteAsync());
+    public async Task<IActionResult> ObtenerMediosTransporte() 
+    {
+        var medios = await _repository.ObtenerMediosTransporteAsync();
+        return Ok(medios.Select(m => new MedioTransporteDto(m.Id, m.Nombre)));
+    }
 
     [Authorize(Roles = "Administrador")]
     [HttpPost("medios-transporte")]
     public async Task<IActionResult> CrearMedioTransporte([FromBody] CrearMedioTransporteDto dto) => 
         Ok(await _service.CrearMedioTransporteAsync(dto));
 
-    // --- ENDPOINTS DE TIPOS DE OPERADOR ---
     [HttpGet("tipos-operador")]
-    public async Task<IActionResult> ObtenerTiposOperador() => Ok(await _repository.ObtenerTiposOperadorAsync());
+    public async Task<IActionResult> ObtenerTiposOperador() 
+    {
+        var tipos = await _repository.ObtenerTiposOperadorAsync();
+        return Ok(tipos.Select(t => new TipoOperadorDto(t.Id, t.Nombre)));
+    }
 
     [Authorize(Roles = "Administrador")]
     [HttpPost("tipos-operador")]
