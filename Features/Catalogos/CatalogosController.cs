@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Features.Catalogos;
 
-[Authorize] // Nivel 1: Exige que el usuario tenga un Token válido para entrar a cualquier método
+//[Authorize] // Nivel 1: Exige que el usuario tenga un Token válido para entrar a cualquier método
 [ApiController]
 [Route("api/[controller]")]
 public class CatalogosController : ControllerBase
