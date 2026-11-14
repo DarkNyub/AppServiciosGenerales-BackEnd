@@ -9,10 +9,13 @@ public class CatalogoService
         _repository = repository;
     }
 
-    // Lógicas de creación mapeando desde el DTO
     public async Task<Categoria> CrearCategoriaAsync(CrearCategoriaDto dto)
     {
-        var categoria = new Categoria { Nombre = dto.Nombre, Activo = true };
+        var categoria = new Categoria { 
+            Nombre = dto.Nombre, 
+            ImagenUrl = dto.ImagenUrl, // Asignamos la imagen
+            Activo = true 
+        };
         await _repository.CrearCategoriaAsync(categoria);
         return categoria;
     }
@@ -25,6 +28,7 @@ public class CatalogoService
             CategoriaId = dto.CategoriaId, 
             PrecioBase = dto.PrecioBase, 
             RequiereEquipo = dto.RequiereEquipo,
+            ImagenUrl = dto.ImagenUrl, // Asignamos la imagen
             Activo = true 
         };
         await _repository.CrearActividadAsync(actividad);

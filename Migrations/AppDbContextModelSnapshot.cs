@@ -17,7 +17,7 @@ namespace API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.14")
+                .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -35,6 +35,9 @@ namespace API.Migrations
 
                     b.Property<int>("CategoriaId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ImagenUrl")
+                        .HasColumnType("text");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -63,6 +66,9 @@ namespace API.Migrations
 
                     b.Property<bool>("Activo")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("ImagenUrl")
+                        .HasColumnType("text");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -266,7 +272,7 @@ namespace API.Migrations
             modelBuilder.Entity("API.Features.Catalogos.Actividad", b =>
                 {
                     b.HasOne("API.Features.Catalogos.Categoria", "Categoria")
-                        .WithMany()
+                        .WithMany("Actividades")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -336,6 +342,11 @@ namespace API.Migrations
                     b.Navigation("TipoOperador");
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("API.Features.Catalogos.Categoria", b =>
+                {
+                    b.Navigation("Actividades");
                 });
 #pragma warning restore 612, 618
         }

@@ -10,5 +10,7 @@ public class Actividad
     
     public int PrecioBase { get; set; }
     public bool RequiereEquipo { get; set; } // True = Bloquea motos para este servicio
+    public string? ImagenUrl { get; set; } // Nuevo campo
+   
     public bool Activo { get; set; } = true;
 }
