@@ -27,16 +27,36 @@ public class AutenticacionService
 
         var token = _jwtService.GenerarToken(usuario);
         
-        // Retornamos el DTO con toda la información lista para el Frontend
         return new RespuestaLoginDto(
             Token: token,
-            Rol: usuario.Rol.ToString(),
             RolId: (int)usuario.Rol,
+            Rol: usuario.Rol.ToString(),
             UsuarioId: usuario.Id,
             NombreCompleto: usuario.NombreCompleto,
             Email: usuario.Email
         );
     }
+
+    // --- NUEVO MÉTODO AÑADIDO ---
+    public async Task<RespuestaLoginDto> RefreshTokenAsync(int usuarioId)
+    {
+        var usuario = await _repository.ObtenerUsuarioPorIdAsync(usuarioId);
+        
+        if (usuario == null || !usuario.Activo)
+            throw new UnauthorizedAccessException("Usuario no encontrado o inactivo.");
+
+        var token = _jwtService.GenerarToken(usuario);
+        
+        return new RespuestaLoginDto(
+            Token: token,
+            RolId: (int)usuario.Rol,
+            Rol: usuario.Rol.ToString(),
+            UsuarioId: usuario.Id,
+            NombreCompleto: usuario.NombreCompleto,
+            Email: usuario.Email
+        );
+    }
+    // ----------------------------
 
     public async Task ReiniciarPasswordAsync(ReiniciarPasswordDto dto)
     {
@@ -47,10 +67,8 @@ public class AutenticacionService
         await _repository.ActualizarUsuarioAsync(usuario);
     }
 
-    // Utilidad interna para administradores/devs
     public string GenerarHashManual(string passwordClara)
     {
         return _passwordHasher.HashPassword(passwordClara);
     }
-    
 }

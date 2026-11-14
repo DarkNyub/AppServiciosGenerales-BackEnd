@@ -18,6 +18,13 @@ public class AutenticacionRepository
         return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
     }
 
+    // --- NUEVO MÉTODO AÑADIDO ---
+    public async Task<Usuario?> ObtenerUsuarioPorIdAsync(int id)
+    {
+        return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+    }
+    // ----------------------------
+
     public async Task ActualizarUsuarioAsync(Usuario usuario)
     {
         _context.Usuarios.Update(usuario);
